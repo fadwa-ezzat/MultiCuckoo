@@ -1,120 +1,102 @@
 
-/*     */ import java.util.LinkedList;
+import java.util.LinkedList;
 
-/*     */
-/*     */ public class MultiCuckoo
-/*     */ {
-	/* 6 */ private LinkedList<Cloud> clouds = new LinkedList();
-	/* 7 */ private Request request = new Request();
-	/* 8 */ private int numServicesChecked = 0;
-	/*     */
-	/* 10 */ private ComposedService Lc = new ComposedService();
+public class MultiCuckoo {
+	private LinkedList<Cloud> clouds = new LinkedList<Cloud>();
+	private Request request = new Request();
+	private int numServicesChecked = 0;
 
-	/*     */
-	/*     */ public LinkedList<Cloud> getClouds()
-	/*     */ {
-		/* 16 */ return this.clouds;
-		/*     */ }
+	private ComposedService Lc = new ComposedService();
 
-	/*     */
-	/*     */ public void setClouds(LinkedList<Cloud> clouds) {
-		/* 20 */ this.clouds = clouds;
-		/*     */ }
+	public LinkedList<Cloud> getClouds() {
+		return this.clouds;
+	}
 
-	/*     */
-	/*     */ public Request getRequest() {
-		/* 24 */ return this.request;
-		/*     */ }
+	public void setClouds(LinkedList<Cloud> clouds) {
+		this.clouds = clouds;
+	}
 
-	/*     */
-	/*     */ public void setRequest(Request request) {
-		/* 28 */ this.request = request;
-		/*     */ }
+	public Request getRequest() {
+		return this.request;
+	}
 
-	/*     */
-	/*     */ public int getNumServicesChecked() {
-		/* 32 */ return this.numServicesChecked;
-		/*     */ }
+	public void setRequest(Request request) {
+		this.request = request;
+	}
 
-	/*     */
-	/*     */ public void setNumServicesChecked(int numServicesChecked) {
-		/* 36 */ this.numServicesChecked = numServicesChecked;
-		/*     */ }
+	public int getNumServicesChecked() {
+		return this.numServicesChecked;
+	}
 
-	/*     */
-	/*     */ public ComposedService getLc() {
-		/* 40 */ return this.Lc;
-		/*     */ }
+	public void setNumServicesChecked(int numServicesChecked) {
+		this.numServicesChecked = numServicesChecked;
+	}
 
-	/*     */
-	/*     */ public void setLc(ComposedService lc) {
-		/* 44 */ this.Lc = lc;
-		/*     */ }
+	public ComposedService getLc() {
+		return this.Lc;
+	}
 
-	/*     */
-	/*     */ public ComposedService composeService() {
-		/* 48 */ boolean stop = false;
-		/* 49 */ int n = getClouds().size() - 1;
-		/* 50 */ double x = Levy.sample_positive(2.0D);
-		/* 51 */ int y = (int) Math.floor(x * this.clouds.size()) % this.clouds.size();
-		/*     */
-		/* 53 */ Cloud Cm = getClouds().get(y);
-		/*     */
-		/* 58 */ while ((n >= 0) && (!stop)) {
-			/* 59 */ LinkedList cloudServices = Cm.getCloudServices();
-			/*     */
-			/* 61 */ if (cloudServices.size() == 0) {
-				/* 62 */ cloudServices = MainClass.setServices(Cm.getPort());
-				/* 63 */ Cm.setCloudService(cloudServices);
-				/* 64 */ Cm.setSrvcsSet(true);
-				/*     */ }
-			/*     */
-			/* 68 */ LinkedList reqCloudIntersect = Helper.cloudRequestIntersect(Cm, getRequest());
-			/*     */
-			/* 72 */ int numOfCloudServices = cloudServices.size();
-			/* 73 */ int numStuff = 0;
-			/* 74 */ for (int i = 0; i < numOfCloudServices; i++) {
-				/* 75 */ numStuff += ((Service) cloudServices.get(i)).getNumOfStuff();
-				/*     */ }
-			/* 77 */ int num = getNumServicesChecked();
-			/* 78 */ setNumServicesChecked(num + numStuff);
-			/*     */
-			/* 80 */ int size = reqCloudIntersect.size();
-			/*     */
-			/* 82 */ if (size > 0)
-			/*     */ {
-				/* 84 */ if (!Helper.intersectWithList(getLc(), reqCloudIntersect))
-				/*     */ {
-					/* 86 */ String savedCloud = "";
-					/*     */
-					/* 88 */ for (int j = 0; j < size; j++) {
-						/* 89 */ savedCloud = ((Service) reqCloudIntersect.get(j)).getServiceFile();
-						/* 90 */ if (!getLc().getHashMap().containsKey(savedCloud)) {
-							/* 91 */ getLc().addToComposedService(savedCloud, Cm);
-							/*     */ }
-						/*     */ }
-					/* 94 */ if (Helper.foundAllNeededServices(getLc(), getRequest())) {
-						/* 95 */ stop = true;
-						/*     */ }
-					/*     */ }
-				/*     */ }
-			/*     */
-			/* 100 */ if ((n >= 0) && (!stop)) {
-				/* 101 */ if (y < getClouds().size()) {
-					/* 102 */ x = Levy.sample_positive(2.0D);
-					/* 103 */ y = (int) Math.floor(x * this.clouds.size()) % this.clouds.size();
-					/*     */
-					/* 105 */ Cm = getClouds().get(y);
-					/*     */ }
-				/* 107 */ n--;
-				/*     */ }
-			/*     */ }
-		/*     */
-		/* 111 */ return getLc();
-		/*     */ }
-	/*     */ }
+	public void setLc(ComposedService lc) {
+		this.Lc = lc;
+	}
 
-/*
- * Location: D:\To Dr-Leena\To Dr-Leena\MultiCuckoo.jar Qualified Name:
- * MultiCuckoo JD-Core Version: 0.6.2
- */
+	public ComposedService composeService() {
+		boolean stop = false;
+		int cloudsInMCE = getClouds().size() - 1;
+		double levy = Levy.sample_positive(2.0D);
+		int randomLevy = (int) Math.floor(levy * this.clouds.size()) % this.clouds.size();
+
+		Cloud Cm = getClouds().get(randomLevy); // like birds
+
+		while ((cloudsInMCE >= 0) && (!stop)) {
+			LinkedList<Service> cloudServices = Cm.getCloudServices();
+
+			if (cloudServices.size() == 0) {
+				cloudServices = MainClass.setServices(Cm.getPort()); // connect to this cloud to access its services
+				Cm.setCloudService(cloudServices);
+				Cm.setSrvcsSet(true);
+			}
+
+			LinkedList<Service> reqCloudIntersect = Helper.cloudRequestIntersect(Cm, getRequest());
+
+			int numOfCloudServices = cloudServices.size();
+			int cost = 0;
+			for (int i = 0; i < numOfCloudServices; i++) {
+				cost += ((Service) cloudServices.get(i)).getCost();
+			}
+			int num = getNumServicesChecked();
+			setNumServicesChecked(num + cost);
+
+			int size = reqCloudIntersect.size();
+
+			if (size > 0) // if the cloud has services meeting the client request
+			{
+				if (!Helper.intersectWithList(getLc(), reqCloudIntersect)) {
+					String savedCloud = "";
+
+					for (int j = 0; j < size; j++) {
+						savedCloud = ((Service) reqCloudIntersect.get(j)).getServiceFile();
+						if (!getLc().getHashMap().containsKey(savedCloud)) {
+							getLc().addToComposedService(savedCloud, Cm);
+						}
+					}
+					if (Helper.foundAllNeededServices(getLc(), getRequest())) {
+						stop = true;
+					}
+				}
+			}
+
+			if ((cloudsInMCE >= 0) && (!stop)) {
+				if (randomLevy < getClouds().size()) { // fly again and get a new Cloud
+					levy = Levy.sample_positive(2.0D);
+					randomLevy = (int) Math.floor(levy * this.clouds.size()) % this.clouds.size();
+
+					Cm = getClouds().get(randomLevy);
+				}
+				cloudsInMCE--;
+			}
+		}
+
+		return getLc();
+	}
+}

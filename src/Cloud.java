@@ -1,95 +1,79 @@
 
-/*    */ import java.util.LinkedList;
+import java.util.LinkedList;
 
-/*    */
-/*    */ public class Cloud
-/*    */ {
-	/* 5 */ private LinkedList<Service> cloudServices = new LinkedList();
-	/* 6 */ private int port = 0;
-	/* 7 */ private String host = "";
-	/* 8 */ private boolean srvcsSet = false;
+public class Cloud {
+	private LinkedList<Service> cloudServices = new LinkedList<Service>();
+	private int port = 0;
+	private String host = "";
+	private boolean srvcsSet = false;
 
-	/*    */
-	/*    */ public Cloud(Cloud cloud) {
-		/* 11 */ this.port = cloud.getPort();
-		/* 12 */ this.host = cloud.getHost();
-		/*    */ }
+	public Cloud(Cloud cloud) {
+		this.port = cloud.getPort();
+		this.host = cloud.getHost();
+	}
 
-	/*    */
-	/*    */ public Cloud() {
-		/* 16 */ this.cloudServices = new LinkedList();
-		/* 17 */ this.srvcsSet = false;
-		/*    */ }
+	public Cloud() {
+		this.cloudServices = new LinkedList<Service>();
+		this.srvcsSet = false;
+	}
 
-	/*    */
-	/*    */ public Cloud(String host, Integer port) {
-		/* 21 */ this.cloudServices = new LinkedList();
-		/* 22 */ this.host = host;
-		/* 23 */ this.port = port.intValue();
-		/* 24 */ this.srvcsSet = false;
-		/*    */ }
+	public Cloud(String host, Integer port) {
+		this.cloudServices = new LinkedList<Service>();
+		this.host = host;
+		this.port = port.intValue();
+		this.srvcsSet = false;
+	}
 
-	/*    */
-	/*    */ public Cloud(String host, Integer port, LinkedList<Service> list) {
-		/* 28 */ this.cloudServices = list;
-		/* 29 */ this.host = host;
-		/* 30 */ this.port = port.intValue();
-		/* 31 */ this.srvcsSet = false;
-		/*    */ }
+	public Cloud(String host, Integer port, LinkedList<Service> list) {
+		this.cloudServices = list;
+		this.host = host;
+		this.port = port.intValue();
+		this.srvcsSet = false;
+	}
 
-	/*    */
-	/*    */ public int numOfActualServices() {
-		/* 35 */ LinkedList itsServices = getCloudServices();
-		/* 36 */ int size = 0;
-		/* 37 */ for (int i = 0; i < itsServices.size(); i++) {
-			/* 38 */ size += ((Service) itsServices.get(i)).getNumOfStuff();
-			/*    */ }
-		/* 40 */ return size;
-		/*    */ }
+	public int numOfActualServices() {
+		LinkedList<?> itsServices = getCloudServices();
+		int size = 0;
+		for (int i = 0; i < itsServices.size(); i++) {
+			size += ((Service) itsServices.get(i)).getCost();
+		}
+		return size;
+	}
 
-	/*    */
-	/*    */ public LinkedList<Service> getCloudServices() {
-		/* 44 */ return this.cloudServices;
-		/*    */ }
+	public LinkedList<Service> getCloudServices() {
+		return this.cloudServices;
+	}
 
-	/*    */
-	/*    */ public void addCloudService(Service service) {
-		/* 48 */ this.cloudServices.add(service);
-		/*    */ }
+	public void addCloudService(Service service) {
+		this.cloudServices.add(service);
+	}
 
-	/*    */
-	/*    */ public void setCloudService(LinkedList<Service> service) {
-		/* 52 */ this.cloudServices = service;
-		/* 53 */ this.srvcsSet = true;
-		/*    */ }
+	public void setCloudService(LinkedList<Service> service) {
+		this.cloudServices = service;
+		this.srvcsSet = true;
+	}
 
-	/*    */
-	/*    */ public boolean getSrvcsSet() {
-		/* 57 */ return this.srvcsSet;
-		/*    */ }
+	public boolean getSrvcsSet() {
+		return this.srvcsSet;
+	}
 
-	/*    */
-	/*    */ public void setSrvcsSet(boolean flag) {
-		/* 61 */ this.srvcsSet = flag;
-		/*    */ }
+	public void setSrvcsSet(boolean flag) {
+		this.srvcsSet = flag;
+	}
 
-	/*    */
-	/*    */ public int getPort() {
-		/* 65 */ return this.port;
-		/*    */ }
+	public int getPort() {
+		return this.port;
+	}
 
-	/*    */
-	/*    */ public void setPort(int port) {
-		/* 69 */ this.port = port;
-		/*    */ }
+	public void setPort(int port) {
+		this.port = port;
+	}
 
-	/*    */
-	/*    */ public String getHost() {
-		/* 73 */ return this.host;
-		/*    */ }
+	public String getHost() {
+		return this.host;
+	}
 
-	/*    */
-	/*    */ public void setHost(String host) {
-		/* 77 */ this.host = host;
-		/*    */ }
-	/*    */ }
+	public void setHost(String host) {
+		this.host = host;
+	}
+}

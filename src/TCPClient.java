@@ -1,50 +1,52 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-/*    */ import java.io.DataInputStream;
-/*    */ import java.io.DataOutputStream;
-/*    */ import java.io.EOFException;
-/*    */ import java.io.IOException;
-/*    */ import java.net.Socket;
-/*    */ import java.net.UnknownHostException;
+/**
+ * 
+ * @author Fadwa Ezzat This class is used to simulate the connection request to
+ *         a cloud on its port
+ */
+public class TCPClient {
+	public static String connectToCloud(int port, String service) {
+		Socket socket = null;
+		try {
+			int serverPort = port;
+			String ip = "localhost";
+			String data = service;
 
-/*    */
-/*    */ public class TCPClient
-/*    */ {
-	/*    */ public static String connectToCloud(int port, String service)
-	/*    */ {
-		/* 29 */ Socket socket = null;
-		/*    */ try {
-			/* 31 */ int serverPort = port;
-			/* 32 */ String ip = "localhost";
-			/* 33 */ String data = service;
-			/*    */
-			/* 35 */ socket = new Socket(ip, serverPort);
-			/* 36 */ DataInputStream input = new DataInputStream(socket.getInputStream());
-			/* 37 */ DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-			/*    */
-			/* 39 */ output.writeInt(data.length());
-			/* 40 */ output.writeBytes(data);
-			/* 41 */ output.flush();
-			/*    */
-			/* 43 */ int len = input.readInt();
-			/* 44 */ byte[] inputBytes = new byte[len];
-			/* 45 */ for (int i = 0; i < len; i++) {
-				/* 46 */ inputBytes[i] = input.readByte();
-				/*    */ }
-			/* 48 */ String response = new String(inputBytes);
-			/* 49 */ return response;
-			/*    */ } catch (UnknownHostException e) {
-			/* 51 */ System.out.println("Sock:" + e.getMessage());
-			/*    */ } catch (EOFException e) {
-			/* 53 */ System.out.println("EOF:" + e.getMessage());
-			/*    */ } catch (IOException e) {
-			/* 55 */ System.out.println("IO:" + e.getMessage());
-			/*    */ } finally {
-			/* 57 */ if (socket != null)
-				/*    */ try {
-					/* 59 */ socket.close();
-					/*    */ } catch (IOException localIOException5) {
-					/*    */ }
-			/*    */ }
-		/* 63 */ return null;
-		/*    */ }
-	/*    */ }
+			socket = new Socket(ip, serverPort);
+			DataInputStream input = new DataInputStream(socket.getInputStream());
+			DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+
+			output.writeInt(data.length());
+			output.writeBytes(data);
+			output.flush();
+
+			int len = input.readInt();
+			byte[] inputBytes = new byte[len];
+			for (int i = 0; i < len; i++) {
+				inputBytes[i] = input.readByte();
+			}
+			String response = new String(inputBytes);
+			System.out.println("Received a request to cloud on port " + serverPort + " Its response is: " + response);
+			return response;
+		} catch (UnknownHostException e) {
+			System.out.println("Sock:" + e.getMessage());
+		} catch (EOFException e) {
+			System.out.println("EOF:" + e.getMessage());
+		} catch (IOException e) {
+			System.out.println("IO:" + e.getMessage());
+		} finally {
+			if (socket != null)
+				try {
+					socket.close();
+				} catch (IOException localIOException5) {
+				}
+		}
+		return null;
+	}
+}
